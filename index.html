@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .quiz-container {
+      background: blue;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    .question {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+    }
+    .answers {
+      display: flex;
+      flex-direction: column;
+    }
+    .answers button {
+      padding: 10px;
+      margin: 5px 0;
+      font-size: 1rem;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f9f9f9;
+      transition: background 0.3s;
+    }
+    .answers button:hover {
+      background: #e0e0e0;
+    }
+    .result {
+      font-size: 1.2rem;
+      margin-top: 20px;
+      text-align: center;
+    }
+    #next-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="quiz-container">
+  <h2>Quiz Game</h2>
+  <div class="question" id="question">Loading...</div>
+  <div class="answers" id="answers"></div>
+  <button id="next-btn" onclick="nextQuestion()">Next</button>
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+  const questions = [
+    {
+      question: "What is the capital of France?",
+      options: ["Paris", "Rome", "Madrid", "Berlin"],
+      correct: "Paris"
+    },
+    {
+      question: "Which planet is known as the Red Planet?",
+      options: ["Earth", "Mars", "Jupiter", "Venus"],
+      correct: "Mars"
+    },
+    {
+      question: "Who wrote 'Hamlet'?",
+      options: ["Charles Dickens", "Mark Twain", "William Shakespeare", "J.K. Rowling"],
+      correct: "William Shakespeare"
+    }
+  ];
+
+  let currentQuestionIndex = 0;
+  let score = 0;
+
+  const questionEl = document.getElementById("question");
+  const answersEl = document.getElementById("answers");
+  const resultEl = document.getElementById("result");
+  const nextBtn = document.getElementById("next-btn");
+
+  function loadQuestion() {
+    const currentQuestion = questions[currentQuestionIndex];
+    questionEl.textContent = currentQuestion.question;
+    answersEl.innerHTML = "";
+    resultEl.textContent = "";
+
+    currentQuestion.options.forEach(option => {
+      const btn = document.createElement("button");
+      btn.textContent = option;
+      btn.onclick = () => selectAnswer(option);
+      answersEl.appendChild(btn);
+    });
+  }
+
+  function selectAnswer(selected) {
+    const correctAnswer = questions[currentQuestionIndex].correct;
+    const buttons = answersEl.querySelectorAll("button");
+    
+    buttons.forEach(btn => {
+      btn.disabled = true;
+      if (btn.textContent === correctAnswer) {
+        btn.style.backgroundColor = "#d4edda"; // green
+      } else if (btn.textContent === selected) {
+        btn.style.backgroundColor = "#f8d7da"; // red
+      }
+    });
+
+    if (selected === correctAnswer) {
+      score++;
+    }
+
+    nextBtn.style.display = "block";
+  }
+
+  function nextQuestion() {
+    currentQuestionIndex++;
+    nextBtn.style.display = "none";
+    if (currentQuestionIndex < questions.length) {
+      loadQuestion();
+    } else {
+      showResult();
+    }
+  }
+
+  function showResult() {
+    questionEl.textContent = "Quiz Completed!";
+    answersEl.innerHTML = "";
+    resultEl.innerHTML = `<strong>Your score: ${score} out of ${questions.length}</strong>`;
+  }
+
+  loadQuestion();
+</script>
+
+</body>
+</html>
